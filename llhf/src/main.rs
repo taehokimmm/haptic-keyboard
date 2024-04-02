@@ -44,11 +44,10 @@ pub fn main() -> Result<()> {
                     if c.is_ascii_alphabetic() {
                         match wav.get(&c.to_ascii_uppercase()) {
                             Some(source) => {
-                                app.latency = process_start.elapsed().as_nanos() as u32;
                                 stream_handle
                                     .play_raw(source.clone().convert_samples())
                                     .expect("TODO: panic message");
-                                // wait for the sound to finish playing
+                                app.latency = process_start.elapsed().as_nanos() as u32;
                             }
                             None => {
                                 panic!("No sound for this key: {}", c)

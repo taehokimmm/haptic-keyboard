@@ -41,29 +41,29 @@ fn create_kvp() -> HashMap<char, String> {
     let kvp: HashMap<char, String> = HashMap::from([
         ('A', String::from("AA")),
         ('B', String::from("B")),
-        ('C', String::from("calibration")),
+        ('C', String::from("K")),
         ('D', String::from("D")),
         ('E', String::from("EH")),
         ('F', String::from("F")),
         ('G', String::from("G")),
-        ('H', String::from("AH")),
+        ('H', String::from("HH")),
         ('I', String::from("IY")),
-        ('J', String::from("AY")),
+        ('J', String::from("G")),
         ('K', String::from("K")),
         ('L', String::from("L")),
         ('M', String::from("M")),
         ('N', String::from("N")),
         ('O', String::from("OW")),
         ('P', String::from("P")),
-        ('Q', String::from("calibration2")),
+        ('Q', String::from("K")),
         ('R', String::from("R")),
         ('S', String::from("S")),
         ('T', String::from("T")),
         ('U', String::from("UW")),
         ('V', String::from("V")),
-        ('W', String::from("AW")),
-        ('X', String::from("DH")),
-        ('Y', String::from("IY")),
+        ('W', String::from("UW")),
+        ('X', String::from("Z")),
+        ('Y', String::from("EY")),
         ('Z', String::from("Z")),
     ]);
     kvp
@@ -72,7 +72,7 @@ fn create_kvp() -> HashMap<char, String> {
 pub fn load_sources() -> HashMap<char, Buffered<Decoder<BufReader<File>>>> {
     let mut sources = HashMap::new();
     for (key, value) in KEY_VALUE.iter() {
-        let path = format!("phonemes-toh/{}.wav", value);
+        let path = format!("phonemes-whc_modified/{}.wav", value);
         let file = File::open(path).unwrap();
         let source = Decoder::new(BufReader::new(file)).unwrap();
         let source = source.buffered();

@@ -29,10 +29,17 @@ impl App {
             count: 0,
         }
     }
-
+    // If the app is in idle mode, it starts the input mode and records the start time.
+    // If the app is already in input mode, it records the input and calculates the input rate and CPM
     pub fn handle_input(&mut self, input: char) {
         match self.state {
-            AppState::Idle => {}
+            AppState::Idle => {
+                self.state = AppState::Input;
+                self.input.push(input);
+                self.start = Instant::now();
+                self.last = Instant::now();
+                self.count = 1;
+            }
             AppState::Input => {
                 self.input.push(input);
                 let now = Instant::now();
@@ -40,7 +47,6 @@ impl App {
                 self.count += 1;
                 self.cpm = match now.duration_since(self.start).as_secs() as u32 {
                     0 => {
-                        // Avoid division by zero, and calculate CPM with milliseconds
                         (self.count * 60 * 1000) / now.duration_since(self.start).as_millis() as u32
                     }
                     s => (self.count * 60) / s,
@@ -49,34 +55,37 @@ impl App {
             }
         }
     }
-
+    // Backspace removes the last character from the input
     pub fn handle_backspace(&mut self) {
         match self.state {
             AppState::Idle => {}
             AppState::Input => {
                 self.input.pop();
+                self.count -= 1;
+                self.last = Instant::now();
             }
         }
     }
-    // Enter starts the input mode, and clears the input if already in input mode
+
+    // Enter inserts a line break into the input
     pub fn handle_enter(&mut self) {
-        self.start = Instant::now();
-        self.count = 0;
         match self.state {
             AppState::Idle => {
                 self.state = AppState::Input;
+                self.count = 0;
             }
             AppState::Input => {
-                self.input.clear();
+                self.input.push('\n');
+                self.start = Instant::now();
+                self.last = Instant::now();
+                self.count = 0;
             }
         }
     }
     // Escape puts the mode back to idle and clears the input. If the mode is already idle, it exits the program
     pub fn handle_escape(&mut self) -> Option<bool> {
         match self.state {
-            AppState::Idle => {
-                Some(true)
-            }
+            AppState::Idle => Some(true),
             AppState::Input => {
                 self.state = AppState::Idle;
                 self.input.clear();
