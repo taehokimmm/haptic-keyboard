@@ -1,11 +1,11 @@
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufReader;
-
+use std::path::PathBuf;
 
 use lazy_static::lazy_static;
-use rodio::{Decoder, Source};
 use rodio::source::Buffered;
+use rodio::{Decoder, Source};
 
 lazy_static! {
     static ref KEY_VALUE: HashMap<char, String> = create_kvp();
@@ -72,8 +72,9 @@ fn create_kvp() -> HashMap<char, String> {
 pub fn load_sources() -> HashMap<char, Buffered<Decoder<BufReader<File>>>> {
     let mut sources = HashMap::new();
     for (key, value) in KEY_VALUE.iter() {
-        let path = format!("phonemes-whc_modified/{}.wav", value);
-        let file = File::open(path).unwrap();
+        let mut path = PathBuf::from("phonemes-whc_modified");
+        path.push(format!("{}.wav", value));
+        let file = File::open(&path).unwrap();
         let source = Decoder::new(BufReader::new(file)).unwrap();
         let source = source.buffered();
         sources.insert(*key, source);

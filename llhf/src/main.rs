@@ -8,6 +8,7 @@
 use std::io::{stdout, Result};
 use std::time::Instant;
 
+use crossterm::event::KeyEventKind;
 use crossterm::{
     event::{self, KeyCode},
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
@@ -37,6 +38,10 @@ pub fn main() -> Result<()> {
         terminal.draw(|f| ui::ui(f, &mut app))?; // Draw the UI
 
         if let event::Event::Key(event) = event::read()? {
+            if event.kind != KeyEventKind::Press {
+                continue;
+            }
+
             let process_start = Instant::now();
             match event.code {
                 KeyCode::Char(c) => {

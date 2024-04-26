@@ -60,6 +60,9 @@ impl App {
         match self.state {
             AppState::Idle => {}
             AppState::Input => {
+                if self.input.is_empty() || self.count == 0 {
+                    return;
+                }
                 self.input.pop();
                 self.count -= 1;
                 self.last = Instant::now();
